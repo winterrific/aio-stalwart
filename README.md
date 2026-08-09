@@ -7,7 +7,8 @@
 > The mail server is one of the most difficult services to deploy. 
 > This solution is quite stable (used for my own cloud) but it is not enterprise quality.
 >
-> If you have any suggestions, questions, or want to report a bug, [open an issue](https://github.com/docjyj/aio-stalwart/issues)!
+> If you have any suggestions, questions, or want to report a
+> bug, [open an issue](https://github.com/winterrific/aio-stalwart/issues)!
 
 # Stalwart Community Container for Nextcloud All-In-One
 
@@ -19,7 +20,6 @@ Compared to a default Stalwart container, this container allows:
 - Automatic configuration of a mail server.
 - Compatibility with Nextcloud All-In-One backups.
 - Work with ClamAV from the All-In-One.
-- *(Planned)* Synchronization of Nextcloud and Stalwart accounts.
 
 ## Getting Started
 
@@ -93,7 +93,7 @@ docker exec -it nextcloud-aio-stalwart curl -k -u "$USER:$PASSWORD" http://127.0
 
 See the [Stalwart FAQ](https://stalw.art/docs/faq) for all possibilities.
 
-For any questions, [open an issue](https://github.com/docjyj/aio-stalwart/issues)!
+For any questions, [open an issue](https://github.com/winterrific/aio-stalwart/issues)!
 
 ### Change the Admin Password
 
