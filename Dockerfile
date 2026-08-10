@@ -4,7 +4,7 @@ FROM ghcr.io/stalwartlabs/stalwart:v0.15.5@sha256:dcf575db2d53d9ef86d6ced8abe4ba
 COPY --chmod=775 bin/* /usr/local/bin/
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl \
+    && apt-get install -y --no-install-recommends curl dnsutils \
     && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 10003
