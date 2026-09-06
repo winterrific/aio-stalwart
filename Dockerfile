@@ -8,7 +8,7 @@ COPY --chmod=775 bin/* /usr/local/bin/
 
 # Install curl for heathcheck, alongside cron and python which are used for migration from v15 to v16; cron and python can be removed once upgraded to v16
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl dnsutils python3 python3-pip python3-requests python3-urllib3\
+    && apt-get install -y --no-install-recommends curl dnsutils python3 python3-pip python3-requests python3-urllib3 cron\
     && rm -rf /var/lib/apt/lists/*
 
 # Install cronjobs for exporting configuration once a day. This will be then applied to the migrated v16 stalwart server
