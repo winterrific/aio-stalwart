@@ -1,8 +1,21 @@
+# Build stalwart-cli first to bundle it with the server
+FROM rust:latest AS builder
+WORKDIR /app
+RUN git clone https://github.com/stalwartlabs/cli.git && \
+    cd cli && \
+    git checkout v1.0.10 && \
+    cargo build --release
+
+# Build mail server docker container
 # From https://github.com/stalwartlabs/mail-server/blob/main/Dockerfile
 FROM ghcr.io/stalwartlabs/stalwart:v0.16.20@sha256:74ca4f7f6885fe302f38a99381f36a208547afce1033d8734d9e6d8d3eba7446
 
-# Copy local binaries
+# Copy local binaries and stalwart-cli
 COPY --chmod=775 bin/* /usr/local/bin/
+COPY --chmod=775 --from=builder /app/cli/target/release/stalwart-cli /usr/local/bin/
+
+# Switch user to root; needed for AIO to work due to additional package and reading certificats from caddy
+USER root
 
 # Install curl for heathcheck
 RUN apt-get update \
