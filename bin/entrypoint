@@ -71,11 +71,9 @@ if [ "$SECURE_DATA_AFTER_UPGRADE" != "OFF" ]; then
         exit 1
       fi
       MIGRATE_TO_0_16="ON"
-    elif [ "$(cat "$AIO_LOCK")" = "0.10" ];  then
-      >&2 echo "You started a v0.16 container without exporting the v0.15.x settings first."
     elif [ "$DATA_VERSION" != "$(cat "$AIO_LOCK")" ]; then
       >&2 echo 'Your data is in an old format.'
-      >&2 echo 'Make a backup and see https://github.com/docjyJ/aio-stalwart#Upgrading'
+      >&2 echo 'Make a backup and see https://github.com/winterrific/aio-stalwart#Upgrading'
       >&2 echo 'To avoid any loss of data, Stalwart will not launch.'
       sleep 10
       exit 1
