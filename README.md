@@ -36,9 +36,11 @@ See [how to use community containers](https://github.com/nextcloud/all-in-one/tr
 After installation on Nextcloud, go to `https://mail.$NC_DOMAIN/login` and log in with the following credentials:
 - **Username**: `admin`
 - **Password**: Get password inside the AIO interface
-  This is the password for the fallback admin used for configuring the mail server thrught the JMAP interface. Login
-  with this account is just possible after the first start or when enabled explicitly. **You need to create an admin
-  user for daily use after the first start.**
+  This is the password for the fallback admin used for configuring the mail server through the JMAP interface. Login
+  with this account is just possible after the first start or when enabled explicitly. **You should create an admin
+  user for daily use after the first start. And deactivate the fallback admin with
+  `sudo docker exec nextcloud-aio-stalwart sed -i 's/RECOVERY_ADMIN="ON"/RECOVERY_ADMIN="OFF"/g' /opt/stalwart-mail/etc/aio-config.env`
+  and restart the container**
 
 Once connected, add another domain, configure your DNS zone, and create your users.
 
@@ -217,7 +219,7 @@ Newly introduced with this release are the the Environment Variables:
 
 Recovery Admin is used to apply the configuration and can be used to login in the Management console. However it's
 recommended to configure an Admin User in the Management Interface and put the ENV to "OFF". This Account can be secured
-with 2FA also, which is not possible for the recovery admin.
+with 2FA also, which is not possible for the recovery admin. See also the [Installation](#installation) section
 
 Other than that, it is highly recommended to check all settings in the WebAdmin after the upgrade, as some of the
 settings might have changed its place or are not part of the migration script from stalwart at all. E.g.
@@ -246,7 +248,7 @@ or follow these steps:
 - save and exit (esc + ":wq")
 - restart mastercontainer `sudo docker restart nextcloud-aio-mastercontainer`
 - Update container in aio web-interface
-- Call the export script manually `sudo docker exec -it nextcloud-aio-stalwart export-settings` OR export the settings
+- Call the export script manually `sudo docker exec nextcloud-aio-stalwart export-settings` OR export the settings
   by your own and import them into the docker volume (follow the official stalwart migration guide)
 - revert the change in ìmage_tag`, restart mastercontainer and update the containers in web-interface (aio-stalwart:v1
   will pickup the settings.json and import them into v0.16 stalwart)
