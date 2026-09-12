@@ -207,6 +207,8 @@ However, this is the first update **that does the migration automatically**. Thi
 configuration has to happen on v0.15 already. Though with the last release there has been a script introduced which
 writes the current lead to loss of all configuration including users, domains, etc. **This possibly leads to data loss
 **.
+The automatic export will take place periodically with Version v0.2 of aio-stalwart. If you skipped this, see manual
+upgrade below.
 
 Newly introduced with this release are the the Environment Variables:
 
@@ -222,8 +224,32 @@ settings might have changed its place or are not part of the migration script fr
 
 - v0.16 now requires a domain for each account during login,
 - app-specific passwords are not migrated automatically,
-- catch all addresses are now setup in the domain itslef and not migrated automatically,
+- catch all addresses are now setup in the domain itself and not migrated automatically,
 - and so on.
+
+The export script writes a file of settings which are not migrated automatically. You can access it through
+`sudo docker exec -it nextcloud-aio-stalwart cat ./unmigrated.txt`
+
+** Trouble-Shooting **
+
+If the periodical exporting of the setting did not take place, you need to roll back to a v0.15 based version
+(aio-stalwart:v0)
+of this container. To manipulate the version of aio-stalwart see
+either [here](https://github.com/nextcloud/all-in-one/tree/main/community-containers#how-to-test-new-containers-in-your-own-installation)
+or follow these steps:
+
+- log into a console of your server
+- call
+  `sudo docker exec -it nextcloud-aio-mastercontainer vi /var/www/docker-aio/community-containers/stalwart/stalwart.json`
+- enter edit mode (press "i")
+- change the `image_tag` to `v0`
+- save and exit (esc + ":wq")
+- restart mastercontainer `sudo docker restart nextcloud-aio-mastercontainer`
+- Update container in aio web-interface
+- Call the export script manually `sudo docker exec -it nextcloud-aio-stalwart export-settings` OR export the settings
+  by your own and import them into the docker volume (follow the official stalwart migration guide)
+- revert the change in ìmage_tag`, restart mastercontainer and update the containers in web-interface (aio-stalwart:v1
+  will pickup the settings.json and import them into v0.16 stalwart)
 
 ### Upgrading from 0.9.x to 0.10.x
 
