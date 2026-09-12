@@ -229,9 +229,6 @@ settings might have changed its place or are not part of the migration script fr
 - catch all addresses are now setup in the domain itself and not migrated automatically,
 - and so on.
 
-The export script writes a file of settings which are not migrated automatically. You can access it through
-`sudo docker exec -it nextcloud-aio-stalwart cat ./unmigrated.txt`
-
 ** Trouble-Shooting **
 
 If the periodical exporting of the setting did not take place, you need to roll back to a v0.15 based version
