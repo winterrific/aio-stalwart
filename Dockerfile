@@ -12,7 +12,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Install cronjobs for exporting configuration once a day. This will be then applied to the migrated v16 stalwart server
-RUN echo "0 2 * * * root ENVIRONMENT export-settings" >> /etc/crontab
+RUN echo "0 12 * * * root ENVIRONMENT export-settings" >> /etc/crontab
 
 EXPOSE 10003
 
