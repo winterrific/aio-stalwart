@@ -14,7 +14,7 @@ FROM ghcr.io/stalwartlabs/stalwart:v0.16.20@sha256:74ca4f7f6885fe302f38a99381f36
 COPY --chmod=775 bin/* /usr/local/bin/
 COPY --chmod=775 --from=builder /app/cli/target/release/stalwart-cli /usr/local/bin/
 
-# Switch user to root; needed for AIO to work due to additional package and reading certificats from caddy
+# Switch user to root; needed for AIO to work due to additional package and reading certificates from caddy
 USER root
 
 # Install curl for heathcheck
