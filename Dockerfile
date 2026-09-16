@@ -1,5 +1,5 @@
 # From https://github.com/stalwartlabs/mail-server/blob/main/Dockerfile
-FROM ghcr.io/stalwartlabs/stalwart:v0.15.5@sha256:dcf575db2d53d9ef86d6ced8abe4ba491984659a0f8862cc6079ee7b41c3c568
+FROM ghcr.io/stalwartlabs/stalwart:v0.16.22@sha256:388dcb75a70727c5b551249a6d34b1f1321294852489e4fa3a4e6be698b7c4f0
 
 # Download v0.16 migration script from stalwartlabs repo
 ADD https://raw.githubusercontent.com/stalwartlabs/stalwart/refs/heads/main/resources/scripts/migrate_v016.py /usr/local/bin/migrate_v016.py
