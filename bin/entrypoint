@@ -130,7 +130,7 @@ if [ "$FIRST_RUN" = "ON" ]; then
   json+="{\"@type\":\"create\",\"object\":\"Domain\",\"value\":{\"aio-domain\":{\"subAddressing\":{\"@type\":\"Enabled\"},\"isEnabled\":true,\"aliases\":{},\"name\":\"$NC_DOMAIN\",\"dnsManagement\":{\"@type\":\"Manual\"},\"dkimManagement\":{\"@type\":\"Automatic\"},\"certificateManagement\":{\"@type\":\"Manual\"}}}}
   "
 else
-  echo "Setup AIO-Domain, since this is the first startup. This will fail if domain already exists."
+  echo "Update AIO-Domain, since this is not first startup."
   json+="{\"@type\":\"upsert\",\"object\":\"Domain\",\"value\":{\"aio-domain\":{\"subAddressing\":{\"@type\":\"Enabled\"},\"isEnabled\":true,\"aliases\":{},\"name\":\"$NC_DOMAIN\",\"dkimManagement\":{\"@type\":\"Automatic\"},\"certificateManagement\":{\"@type\":\"Manual\"}}}}
   "
 fi
@@ -144,8 +144,8 @@ fi
 json+=", \"services\":{\"caldav\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"carddav\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"imap\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"jmap\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"managesieve\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"smtp\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"webdav\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"}}}}
 "
 if [ "$ENSURE_HTTP_USE_X_FORWARDED" = "ON" ]; then
- json+="{\"@type\": \"update\", \"object\": \"Http\", \"value\": { \"useXForwarded\": true }}
- "
+   json+="{\"@type\": \"update\", \"object\": \"Http\", \"value\": { \"useXForwarded\": true }}
+   "
 fi
 
 ## --- TLS Certificate (Auto-Config) ---
@@ -169,18 +169,22 @@ fi
 
 # --- ClamAV ---
 if [ "$ENSURE_AIO_CLAMAV_CONFIG" = "ON" ]; then
-json+="{\"@type\": \"destroy\", \"object\": \"MtaMilter\"}
-"
+  json+="{\"@type\": \"destroy\", \"object\": \"MtaMilter\"}
+  "
 fi
 if [ "$ENSURE_AIO_CLAMAV_CONFIG" = "ON" ] && [ "$CLAMAV_ENABLED" = "yes" ]; then
-json+="{\"@type\": \"create\", \"object\": \"MtaMilter\", \"value\": { \"aio-clamav\": { \"hostname\": \"nextcloud-aio-clamav\", \"port\": 7357, \"useTls\":false, \"allowInvalidCerts\":false, \"enable\": { \"match\": { \"0\": { \"then\": \"true\", \"if\": \"listener = 'aio-mail'\" }}, \"else\": \"false\" }}}}
-"
+  json+="{\"@type\": \"create\", \"object\": \"MtaMilter\", \"value\": { \"aio-clamav\": { \"hostname\": \"nextcloud-aio-clamav\", \"port\": 7357, \"useTls\":false, \"allowInvalidCerts\":false, \"enable\": { \"match\": { \"0\": { \"then\": \"true\", \"if\": \"listener = 'aio-mail'\" }}, \"else\": \"false\" }}}}
+  "
+  while [ ! "$(dig A +short nextcloud-aio-clamav)"  ]; do
+    >&2 echo "Waiting for ClamAV to become available..."
+    sleep 10
+  done
 fi
 
 # --- Logging (File) ---
 if [ "$ENSURE_FILE_LOGGING_CONFIG" = "ON" ] || [ "$ENSURE_FILE_LOGGING_CONFIG" = "ON" ]; then
-json+="{\"@type\": \"destroy\", \"object\": \"Tracer\"}
-"
+  json+="{\"@type\": \"destroy\", \"object\": \"Tracer\"}
+  "
 fi
 if [ "$ENSURE_FILE_LOGGING_CONFIG" = "ON" ]; then
   json+="{\"@type\": \"create\", \"object\": \"Tracer\", \"value\": { \"aio-file\": { \"@type\": \"Log\", \"level\": \"$LOG_LEVEL\", \"path\": \"/var/log\", \"prefix\": \"stalwart.log\", \"rotate\": \"daily\", \"ansi\": false, \"enable\": true}}}
