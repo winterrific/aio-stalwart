@@ -1,5 +1,5 @@
 # Build stalwart-cli first to bundle it with the server
-FROM rust:latest AS builder
+FROM rust:1.98.1@sha256:a8a5f0a1e5fe7dfe1d352591e4a1c7dd2c08fd70475cae872cf3458ba0df0546 AS builder
 WORKDIR /app
 RUN git clone https://github.com/stalwartlabs/cli.git && \
     cd cli && \
@@ -19,7 +19,7 @@ USER root
 
 # Install curl for heathcheck
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl dnsutils\
+    && apt-get install -y --no-install-recommends curl=8.14.1-2+deb13u5 bind9-dnsutils=1:9.20.29-1~deb13u1 \
     && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 10003
