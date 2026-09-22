@@ -130,7 +130,7 @@ if [ "$FIRST_RUN" = "ON" ]; then
   json+="{\"@type\":\"create\",\"object\":\"Domain\",\"value\":{\"aio-domain\":{\"subAddressing\":{\"@type\":\"Enabled\"},\"isEnabled\":true,\"aliases\":{},\"name\":\"$NC_DOMAIN\",\"dnsManagement\":{\"@type\":\"Manual\"},\"dkimManagement\":{\"@type\":\"Automatic\"},\"certificateManagement\":{\"@type\":\"Manual\"}}}}
   "
 else
-  echo "Setup AIO-Domain, since this is the first startup. This will fail if domain already exists."
+  echo "Update AIO-Domain, since this is not first startup."
   json+="{\"@type\":\"upsert\",\"object\":\"Domain\",\"value\":{\"aio-domain\":{\"subAddressing\":{\"@type\":\"Enabled\"},\"isEnabled\":true,\"aliases\":{},\"name\":\"$NC_DOMAIN\",\"dkimManagement\":{\"@type\":\"Automatic\"},\"certificateManagement\":{\"@type\":\"Manual\"}}}}
   "
 fi
