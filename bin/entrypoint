@@ -158,6 +158,8 @@ if [ "$AUTO_CONFIG_TLS_CERT" = "ON" ]; then
   else
     AIO_KEY="/caddy/caddy/certificates/acme-v02.api.letsencrypt.org-directory/mail.$NC_DOMAIN/mail.$NC_DOMAIN.key"
     AIO_PUB="/caddy/caddy/certificates/acme-v02.api.letsencrypt.org-directory/mail.$NC_DOMAIN/mail.$NC_DOMAIN.crt"
+    json+="{\"@type\": \"destroy\", \"object\": \"Certificate\"}
+    "
     json+="{\"@type\":\"upsert\",\"object\":\"Certificate\",\"value\":{\"aio-cert\": {\"subjectAlternativeNames\": \"mail.$NC_DOMAIN\", \"privateKey\":{\"@type\":\"File\",\"filePath\":\"$AIO_KEY\"},\"certificate\":{\"@type\":\"File\",\"filePath\":\"$AIO_PUB\"}}}}
     "
     # Wait for certs to exist
