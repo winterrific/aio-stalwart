@@ -22,7 +22,7 @@ DATA_VERSION="0.16"
 : "${ENSURE_FALLBACK_ADMIN_CONFIG:=ON}"
 : "${ENSURE_AIO_CLAMAV_CONFIG:=ON}"
 : "${AUTO_CONFIG_TLS_CERT:=ON}"
-: "${ENSURE_DNSSEC_VALIDATE:=ON}" ## default is set to ON, which is checking if the local resolver is validating dnssec, this is neede for DANE.
+: "${ENSURE_DNSSEC_VALIDATE:=ON}" ## default is set to ON, which is checking if the local resolver is validating dnssec, this is needed for DANE.
 : "${RECOVERY_ADMIN:=ON}"  ## default is set to ON to give the user the chance to create an admin account. Shall be changed of OFF by User.
 : "${LOG_LEVEL:=info}"  ## default: info; altern: debug or trace
 
