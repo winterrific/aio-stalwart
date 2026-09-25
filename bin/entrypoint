@@ -22,6 +22,7 @@ DATA_VERSION="0.16"
 : "${ENSURE_FALLBACK_ADMIN_CONFIG:=ON}"
 : "${ENSURE_AIO_CLAMAV_CONFIG:=ON}"
 : "${AUTO_CONFIG_TLS_CERT:=ON}"
+: "${ENSURE_DNSSEC_VALIDATE:=ON}" ## default is set to ON, which is checking if the local resolver is validating dnssec, this is neede for DANE.
 : "${RECOVERY_ADMIN:=ON}"  ## default is set to ON to give the user the chance to create an admin account. Shall be changed of OFF by User.
 : "${LOG_LEVEL:=info}"  ## default: info; altern: debug or trace
 
@@ -43,6 +44,7 @@ if [ ! -f "$AIO_CONFIG_ENV" ]; then
   echo 'ENSURE_FALLBACK_ADMIN_CONFIG="'${ENSURE_FALLBACK_ADMIN_CONFIG}'"' >> "${AIO_CONFIG_ENV}"
   echo 'ENSURE_AIO_CLAMAV_CONFIG="'${ENSURE_AIO_CLAMAV_CONFIG}'"' >> "${AIO_CONFIG_ENV}"
   echo 'AUTO_CONFIG_TLS_CERT="'${AUTO_CONFIG_TLS_CERT}'"' >> "${AIO_CONFIG_ENV}"
+  echo 'ENSURE_DNSSEC_VALIDATE="'${ENSURE_DNSSEC_VALIDATE}'"' >> "${ENSURE_DNSSEC_VALIDATE}"
   echo 'RECOVERY_ADMIN="'${RECOVERY_ADMIN}'"' >> "${RECOVERY_ADMIN}"
   echo 'LOG_LEVEL="'${LOG_LEVEL}'"' >> "${AIO_CONFIG_ENV}"
 fi
@@ -149,7 +151,7 @@ if [ "$ENSURE_HTTP_USE_X_FORWARDED" = "ON" ]; then
 fi
 
 ## --- TLS Certificate (Auto-Config) ---
-# TLS certs are getting updated each time, expecting to just use the aio mechanism for setting up the TLS Certs
+# TLS certs are getting first destroyed and then updated each time, expecting to just use the aio mechanism for setting up the TLS Certs
 if [ "$AUTO_CONFIG_TLS_CERT" = "ON" ]; then
   if [ -z "$NC_DOMAIN" ]; then
     >&2 echo "NC_DOMAIN is not set. Skipping TLS certificate configuration."
@@ -164,6 +166,15 @@ if [ "$AUTO_CONFIG_TLS_CERT" = "ON" ]; then
       >&2 echo "See: https://github.com/docjyJ/aio-stalwart#use-your-own-certificate"
       sleep 10
     done
+  fi
+fi
+
+# --- DNS config ---
+if [ "$ENSURE_DNSSEC_VALIDATE" = "ON" ]; then
+  if [ ! "$(dig +dnssec cloudflare.com A | grep -q 'flags:.* ad')" ];  then
+      echo "DNS: your local/docker resolver is not validating dnssec. Configuring an external one (Quad9)."
+      json+="{\"@type\":\"update\",\"object\":\"DnsResolver\",\"value\":{\"@type\": \"Quad9\"}}
+      "
   fi
 fi
 
