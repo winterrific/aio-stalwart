@@ -3,7 +3,7 @@ FROM rust:1.98.1@sha256:a8a5f0a1e5fe7dfe1d352591e4a1c7dd2c08fd70475cae872cf3458b
 WORKDIR /app
 RUN git clone https://github.com/stalwartlabs/cli.git
 WORKDIR /app/cli
-RUN git checkout v1.0.12 && \
+RUN git checkout v1.0.13 && \
     cargo build --release
 
 # Build mail server docker container
