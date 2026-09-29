@@ -32,16 +32,14 @@ docker run --rm -v $CADDY:/caddy:ro -v $STALWART:/opt/stalwart-mail \
     -e "NC_DOMAIN=$NC_DOMAIN" \
     -e "STALWART_USER_PASS=$PASSWORD" \
     --name $STALWART $STALWART &
-STALWART_PID=$!
-sleep 30
+sleep 11
 
 print_step "Test"
-docker exec $STALWART stalwart-cli --url http://127.0.0.1:10003 --user "admin" --password $PASSWORD snapshot \
-Tenant Domain DkimSignature AcmeProvider Certificate DnsServer Role \
-    Account Directory SystemSettings DataRetention BlobStore InMemoryStore SearchStore \
+docker exec $STALWART stalwart-cli --url http://localhost:8080 --user "admin" --password $PASSWORD snapshot \
+    Tenant Domain Directory DkimSignature AcmeProvider Certificate DnsServer Role Account \
+    SystemSettings DataRetention BlobStore InMemoryStore SearchStore --allow-unresolved PublicKey \
     > out.ndjson
 
 print_step "Remove volume"
 docker container rm $STALWART -f
 docker volume rm $STALWART $CADDY
-tail --pid=$STALWART_PID -f /dev/null
