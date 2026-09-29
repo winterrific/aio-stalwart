@@ -1,0 +1,24 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Create Branch
+
+jobs:
+  build:
+    permissions:
+      contents: write
+    name: Create Branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.4
+      - name: Create Branch
+        id: create_branch
+        uses: peterjgrainger/action-create-branch@v4.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: release/${{ github.ref }}
