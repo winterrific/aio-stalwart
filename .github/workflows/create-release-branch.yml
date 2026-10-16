@@ -24,4 +24,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          branch: release/${{ github.ref.name }}
+          branch: release/${{ github.ref_name }}
