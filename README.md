@@ -42,7 +42,7 @@ After installation on Nextcloud, go to `https://mail.$NC_DOMAIN/login` and log i
   `sudo docker exec nextcloud-aio-stalwart sed -i 's/RECOVERY_ADMIN="ON"/RECOVERY_ADMIN="OFF"/g' /opt/stalwart-mail/etc/aio-config.env`
   and restart the container**
 
-Once connected, add another domain, configure your DNS zone, and create your users.
+Once connected, add another domain, configure your DNS zone and create your users.
 
 Additionally, you might want to install and configure [Snappymail](https://apps.nextcloud.com/apps/snappymail) or [Mail](https://apps.nextcloud.com/apps/mail) inside Nextcloud to use your mail accounts for sending and retrieving emails.
 
@@ -102,9 +102,12 @@ For any questions, [open an issue](https://github.com/winterrific/aio-stalwart/i
 
 ### Change the Admin Password
 
-Before changing the password, disable the managed credential of fallback admin. See [Managed Settings](#managed-settings).
-
-Then you can change the password in the WebAdmin.
+As of v0.16 the fallback admin can only be set and changed during start with environment variable. The fallback admin
+is on by default and the password can be found in AIO Admin console. However, you can disable the fallback admin by
+setting the environment variable `STALWART_FALLBACK_ADMIN` to `false`.
+Before you do so you should create a new admin user using the Webinterface. And deactivate the fallback admin with
+`sudo docker exec nextcloud-aio-stalwart sed -i 's/RECOVERY_ADMIN="ON"/RECOVERY_ADMIN="OFF"/g' /opt/stalwart-mail/etc/aio-config.env`
+and restart the container. See also [Managed Settings](#managed-settings).
 
 ### Enable AIO ClamAV
 
@@ -187,7 +190,7 @@ docker exec -it nextcloud-aio-stalwart bash -c "nano /opt/stalwart-mail/etc/aio-
 
 See [Stalwart Upgrading Guide](https://github.com/stalwartlabs/stalwart/tree/main/UPGRADING).
 
-During a major server update, this message will be displayed:
+During a major server update when manual intervention is needed, this message will be displayed:
 
 ```
 Your data is in an old format.
@@ -196,7 +199,7 @@ To avoid any loss of data, Stalwart will not launch.
 ```
 
 > [!CAUTION]
-> Before each update, don't forget to make a backup.
+> Before each update, remember to make a backup.
 
 ### Upgrading from 0.15.x to 0.16.x
 
