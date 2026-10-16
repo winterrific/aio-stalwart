@@ -173,7 +173,7 @@ fi
 
 # --- DNS config ---
 if [ "$ENSURE_DNSSEC_VALIDATE" = "ON" ]; then
-  if [ ! "$(dig +dnssec cloudflare.com A | grep -q 'flags:.* ad')" ];  then
+  if ! dig +dnssec cloudflare.com A | grep -q 'flags:.* ad'; then
       echo "DNS: your local/docker resolver is not validating dnssec. Configuring an external one (Quad9)."
       json+="{\"@type\":\"update\",\"object\":\"DnsResolver\",\"value\":{\"@type\": \"Quad9\"}}
       "
