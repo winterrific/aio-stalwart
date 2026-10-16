@@ -195,7 +195,7 @@ if [ "$ENSURE_AIO_CLAMAV_CONFIG" = "ON" ] && [ "$CLAMAV_ENABLED" = "yes" ]; then
 fi
 
 # --- Logging (File) ---
-if [ "$ENSURE_FILE_LOGGING_CONFIG" = "ON" ] || [ "$ENSURE_FILE_LOGGING_CONFIG" = "ON" ]; then
+if [ "$ENSURE_FILE_LOGGING_CONFIG" = "ON" ] || [ "$ENSURE_CONSOLE_LOGGING_CONFIG" = "ON" ]; then
   json+="{\"@type\": \"destroy\", \"object\": \"Tracer\"}
   "
 fi
