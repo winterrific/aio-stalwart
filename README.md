@@ -104,7 +104,7 @@ For any questions, [open an issue](https://github.com/winterrific/aio-stalwart/i
 
 As of v0.16 the fallback admin can only be set and changed during start with environment variable. The fallback admin
 is on by default and the password can be found in AIO Admin console. However, you can disable the fallback admin by
-setting the environment variable `STALWART_FALLBACK_ADMIN` to `false`.
+setting the environment variable `STALWART_FALLBACK_ADMIN` to `OFF`.
 Before you do so you should create a new admin user using the Webinterface. And deactivate the fallback admin with
 `sudo docker exec nextcloud-aio-stalwart sed -i 's/RECOVERY_ADMIN="ON"/RECOVERY_ADMIN="OFF"/g' /opt/stalwart-mail/etc/aio-config.env`
 and restart the container. See also [Managed Settings](#managed-settings).
