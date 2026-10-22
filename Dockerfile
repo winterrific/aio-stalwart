@@ -19,7 +19,7 @@ USER root
 
 # Install curl for heathcheck
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl bind9-dnsutils \
+    && apt-get install -y --no-install-recommends curl=8.14.1-2+deb13u7 bind9-dnsutils=1:9.20.30-1~deb13u1 \
     && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 10003
