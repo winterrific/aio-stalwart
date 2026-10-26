@@ -8,8 +8,8 @@ AIO-Stalwart will follow the latest release of stalwart mail server, after a sho
 ## Reporting a Vulnerability
 
 For security issues concerning the mail server itself, please follow the procedure in https://github.com/stalwartlabs/stalwart/blob/main/SECURITY.md
-For issues with the AIO integration itself or the container here, which is not the mail server itself, please open an issue or if it is an 
-vulnerability which might be actively exploited get in touch with me:
+For security vulnerabilities in the AIO integration or this container, please contact me privately using the details below, regardless of whether active exploitation is known.
+Please use public issues only for non-security bugs.
 
 Matrix: #ruben@winterrific.net
 Mail: aio-stalwart-security@winterrific.net
