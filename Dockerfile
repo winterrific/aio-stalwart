@@ -8,7 +8,7 @@ RUN git checkout v1.0.13 && \
 
 # Build mail server docker container
 # From https://github.com/stalwartlabs/mail-server/blob/main/Dockerfile
-FROM ghcr.io/stalwartlabs/stalwart:v0.16.27@sha256:c429b311c93db5606598abc1c68225a85a6953183848ae01bee9c6a98885836c
+FROM ghcr.io/stalwartlabs/stalwart:v1.0.0@sha256:baafeacd6cbde77acdd94af49972d41c6709e54a376df48e18a9fe3f445eb3d5
 
 # Copy local binaries and stalwart-cli
 COPY --chmod=775 bin/* /usr/local/bin/
