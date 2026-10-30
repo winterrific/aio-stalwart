@@ -4,7 +4,7 @@ WORKDIR /app
 RUN git clone https://github.com/stalwartlabs/cli.git
 WORKDIR /app/cli
 RUN git checkout v1.0.13 && \
-    cargo build --release
+    cargo build --release --locked
 
 # Build mail server docker container
 # From https://github.com/stalwartlabs/mail-server/blob/main/Dockerfile

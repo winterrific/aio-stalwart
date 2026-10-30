@@ -62,6 +62,16 @@ if [ ! -f '/etc/stalwart/config.json' ]; then
   ln -s /opt/stalwart-mail/etc/config.json /etc/stalwart/config.json
 fi
 
+# Require at least 8 characters, containing both letters and numbers
+if [ "${#STALWART_USER_PASS}" -lt 8 ] \
+  || ! printf '%s' "$STALWART_USER_PASS" | grep -q '[0-9]' \
+  || ! printf '%s' "$STALWART_USER_PASS" | grep -q '[A-Za-z]'; then
+  >&2 echo 'STALWART_USER_PASS must be at least 8 characters long and contain both letters and numbers.'
+  sleep 10
+  exit 1
+fi
+
+
 # Default for setup is create the entries
 if [ "$SECURE_DATA_AFTER_UPGRADE" != "OFF" ]; then
   if [ -f "$AIO_LOCK" ]; then
