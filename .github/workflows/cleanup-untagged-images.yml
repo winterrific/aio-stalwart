@@ -9,7 +9,7 @@ on:
         description: 'Simulate cleanup without deleting images (dry-run)'
         required: true
         type: boolean
-        default: false
+        default: true
 
 jobs:
   cleanup:
