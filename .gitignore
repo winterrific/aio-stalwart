@@ -1,3 +1,7 @@
 .vscode/
 .idea/
+.junie/
 *.iml
+out.ndjson
+Caddyfile
+docker-compose.yml
