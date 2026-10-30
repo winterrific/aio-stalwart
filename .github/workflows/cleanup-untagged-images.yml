@@ -1,0 +1,30 @@
+name: Cleanup Untagged and Unreferenced Images
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Run weekly on Sunday at 00:00 UTC
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Simulate cleanup without deleting images (dry-run)'
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  cleanup:
+    name: Delete untagged and unreferenced images
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+
+    steps:
+      - name: Delete untagged and unreferenced images
+        uses: snok/container-retention-policy@v3.0.0
+        with:
+          account: user # Set to 'user' for personal accounts or your GitHub organization name
+          image-names: aio-stalwart
+          tag-selection: untagged
+          cut-off: 1M # 1 Month
+          dry-run: ${{ inputs.dry_run || false }}
+          token: ${{ secrets.GITHUB_TOKEN }}
