@@ -1,3 +1,4 @@
 #!/bin/sh
 # Script for preparing the system for the v1.0 migration
 stalwart-migrate prepare --source /opt/stalwart-mail/etc/config.json --state /opt/stalwart-mail/etc/migration
+echo "0.18" > /opt/stalwart-mail/aio.lock
