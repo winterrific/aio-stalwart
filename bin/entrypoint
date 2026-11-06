@@ -88,6 +88,27 @@ if [ "$SECURE_DATA_AFTER_UPGRADE" != "OFF" ]; then
       echo "$DATA_VERSION" > "$AIO_LOCK"
     elif [ "$(cat "$AIO_LOCK")" = "0.17" ]; then
       >&2 echo "Run the preparation script to prepare the v1.0 migration. SEE RELEASE NOTES."
+    elif [ "$(cat "$AIO_LOCK")" = "0.18" ]; then
+      >&2 echo 'Migrating Server to v1.0'
+      SRC=/opt/stalwart-mail/data
+      DST=/opt/stalwart-mail
+      src_size=$(du -sb "$SRC" | awk '{print $1}')
+      avail=$(df -B1 --output=avail "$DST" | tail -n1)
+      if [ "$avail" -lt "$(( src_size * 2 ))" ]; then
+          echo "Not enough free space (want >= 2x DB size for copy + migration headroom)." >&2
+          exit 1
+      fi
+      curl --proto '=https' --tlsv1.2 -LsSf https://github.com/stalwartlabs/stalwart-migrate/releases/download/v1.0.6/stalwart-migrate-installer.sh | sh
+      mv /opt/stalwart-mail/data /opt/stalwart-mail/data_old
+      echo '{
+              "@type": "RocksDb",
+              "path": "/opt/stalwart-mail/data_old"
+            }' > /opt/stalwart-mail/etc/config_old.json
+      stalwart-migrate run --final --source /opt/stalwart-mail/etc/config_old.json --target /opt/stalwart-mail/etc/config_old.json --state /opt/stalwart-mail/etc/migration
+      if [ "$(stalwart-migrate verify --source /opt/stalwart-mail/etc/config_old.json --target /opt/stalwart-mail/etc/config_old.json --state /opt/stalwart-mail/etc/migration)" != 0 ]; then
+          echo "Migration failed! Manual intervention neeeded. Please check the logs." >&2
+          exit 1
+      fi
     elif [ "$DATA_VERSION" != "$(cat "$AIO_LOCK")" ]; then
       >&2 echo 'Your data is in an old format.'
       >&2 echo 'Make a backup and see https://github.com/winterrific/aio-stalwart#Upgrading'
