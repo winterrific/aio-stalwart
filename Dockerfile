@@ -19,8 +19,13 @@ USER root
 
 # Install curl for heathcheck
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl=8.14.1-2+deb13u7 bind9-dnsutils=1:9.20.30-1~deb13u1 \
+    && apt-get install -y --no-install-recommends curl=8.14.1-2+deb13u7 bind9-dnsutils=1:9.20.30-1~deb13u1 xz-utils\
     && rm -rf /var/lib/apt/lists/*
+
+RUN curl --proto '=https' --tlsv1.2 -LsSf https://github.com/stalwartlabs/stalwart-migrate/releases/download/v1.0.6/stalwart-migrate-installer.sh \
+    -o ./stalwart-migrate-installer.sh \
+    && sh ./stalwart-migrate-installer.sh \
+    && rm ./stalwart-migrate-installer.sh
 
 EXPOSE 10003
 
