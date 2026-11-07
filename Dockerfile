@@ -24,7 +24,7 @@ RUN apt-get update \
 
 RUN curl --proto '=https' --tlsv1.2 -LsSf https://github.com/stalwartlabs/stalwart-migrate/releases/download/v1.0.6/stalwart-migrate-installer.sh \
     -o ./stalwart-migrate-installer.sh \
-    && sh ./stalwart-migrate-installer.sh \
+    && sh ./stalwart-migrate-installer.sh --version 1.0.6 \
     && rm ./stalwart-migrate-installer.sh
 
 EXPOSE 10003
