@@ -168,13 +168,13 @@ fi
 
 # --- Submission Port (SMTPS) ---
 if [ "$ENSURE_SUBMISSION_PORT_CONFIG" = "ON" ]; then
-  json+="{\"@type\": \"create\", \"object\": \"NetworkListener\", \"value\": { \"aio-submission\": { \"name\": \"aio-submission\", \"bind\": {\"[::]:465\": true}, \"protocol\": \"smtp\", \"tlsImplicit\": true }}}
+  json+="{\"@type\": \"create\", \"object\": \"NetworkListener\", \"value\": { \"aio-submission\": { \"name\": \"aio-submission\", \"bind\": {\"[::]:465\": true}, \"protocol\": \"smtp\", \"implicitTls\": true }}}
   "
 fi
 
 # --- IMAP Port (IMAPS) ---
 if [ "$ENSURE_IMAP_PORT_CONFIG" = "ON" ]; then
-  json+="{\"@type\": \"create\", \"object\": \"NetworkListener\", \"value\": { \"aio-imap\": { \"name\": \"aio-imap\", \"bind\": {\"[::]:993\": true}, \"protocol\": \"imap\", \"tlsImplicit\": true }}}
+  json+="{\"@type\": \"create\", \"object\": \"NetworkListener\", \"value\": { \"aio-imap\": { \"name\": \"aio-imap\", \"bind\": {\"[::]:993\": true}, \"protocol\": \"imap\", \"implicitTls\": true }}}
   "
 fi
 
@@ -186,7 +186,7 @@ fi
 
 # --- Managesieve Port ---
 if [ "$ENSURE_MANAGESIEVE_PORT_CONFIG" != "OFF" ]; then
-  json+="{\"@type\": \"create\", \"object\": \"NetworkListener\", \"value\": { \"aio-managesieve\": { \"name\": \"aio-managesieve\", \"bind\": {\"[::]:4190\": true}, \"protocol\": \"manageSieve\", \"tlsImplicit\": true }}}
+  json+="{\"@type\": \"create\", \"object\": \"NetworkListener\", \"value\": { \"aio-managesieve\": { \"name\": \"aio-managesieve\", \"bind\": {\"[::]:4190\": true}, \"protocol\": \"manageSieve\", \"implicitTls\": true }}}
   "
 fi
 
@@ -211,7 +211,7 @@ fi
 json+=", \"services\":{\"caldav\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"carddav\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"imap\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"jmap\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"managesieve\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"smtp\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"webdav\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"}}}}
 "
 if [ "$ENSURE_HTTP_USE_X_FORWARDED" = "ON" ]; then
-   json+="{\"@type\": \"update\", \"object\": \"Http\", \"value\": { \"useXForwarded\": true }}
+   json+="{\"@type\": \"update\", \"object\": \"Http\", \"value\": { \"clientIpSource\": \"xForwardedFor\" }}
    "
 fi
 
