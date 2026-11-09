@@ -55,7 +55,7 @@ source "$AIO_CONFIG_ENV"
 if [ ! -f '/opt/stalwart-mail/etc/config.json' ]; then
   echo '{
           "@type": "RocksDb",
-          "path": "/opt/stalwart-mail/data"
+          "path": "/opt/stalwart-mail/data_1"
         }' > /opt/stalwart-mail/etc/config.json
 fi
 if [ ! -f '/etc/stalwart/config.json' ]; then
