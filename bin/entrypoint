@@ -130,6 +130,7 @@ policy = "recommended"
       fi
       mv -f /opt/stalwart-mail/etc/config_1.json /opt/stalwart-mail/etc/config.json
       echo "$DATA_VERSION" > "$AIO_LOCK"
+      export STALWART_UPDATE_ROLE_PERMISSIONS=true
     elif [ "$DATA_VERSION" != "$(cat "$AIO_LOCK")" ]; then
       >&2 echo 'Your data is in an old format.'
       >&2 echo 'Make a backup and see https://github.com/winterrific/aio-stalwart#Upgrading'
@@ -142,14 +143,6 @@ policy = "recommended"
     echo "$DATA_VERSION" > "$AIO_LOCK"
   fi
 fi
-
-
-# --- TODO ----
-# Some objects have been changed too:
-# ✗ create NetworkListener: NetworkListener: create failed for `aio-submission` (operation #3): error: invalidPatch |   Invalid key for object |   Properties:
-# ✗ create NetworkListener: NetworkListener: create failed for `aio-imap` (operation #4): error: invalidPatch |   Invalid key for object |   Properties:
-# ✗ create NetworkListener: NetworkListener: create failed for `aio-managesieve` (operation #6): error: invalidPatch |   Invalid key for object |   Properties:
-# ✗ update Http: Http: update failed for id singleton: error: invalidPatch |   Invalid property |   Properties: useXForwarded
 
 # --- Generate JSON Configuration ---
 # Initialize JSON object
