@@ -5,7 +5,7 @@ AIO_CONFIG_ENV="/opt/stalwart-mail/etc/aio-config.env"
 STW_CONFIG_JSON="/opt/stalwart-mail/etc/aio.json"
 STW_CONFIG_EXPORT="/opt/stalwart-mail/etc/export.json"
 AIO_LOCK="/opt/stalwart-mail/aio.lock"
-DATA_VERSION="0.17"
+DATA_VERSION="1.0"
 
 # --- Defaults for Environment Variables ---
 : "${SECURE_DATA_AFTER_UPGRADE:=ON}"
@@ -55,7 +55,7 @@ source "$AIO_CONFIG_ENV"
 if [ ! -f '/opt/stalwart-mail/etc/config.json' ]; then
   echo '{
           "@type": "RocksDb",
-          "path": "/opt/stalwart-mail/data"
+          "path": "/opt/stalwart-mail/data_1"
         }' > /opt/stalwart-mail/etc/config.json
 fi
 if [ ! -f '/etc/stalwart/config.json' ]; then
@@ -87,9 +87,50 @@ if [ "$SECURE_DATA_AFTER_UPGRADE" != "OFF" ]; then
       >&2 echo 'Marking DATA_VERSION as ran 0.16.27; preparation for v1.0 migration'
       echo "$DATA_VERSION" > "$AIO_LOCK"
     elif [ "$(cat "$AIO_LOCK")" = "0.17" ]; then
-      >&2 echo "Run the preparation script to prepare the v1.0 migration. SEE RELEASE NOTES."
+      >&2 echo "Preparation script did not run yet. Taking the defaults"
+      if [ ! -f '/opt/stalwart-mail/etc/migration/answers.toml' ]; then
+        >&2 echo "There is already a file, will not override it. Please check the answers.toml file and if the locked version is set to 0.18"
+        exit 1
+      fi
+      mkdir /opt/stalwart-mail/etc/migration
+      echo '
+version = 1
+[global.categories]
+include = ["settings", "principals", "mail", "calendars", "contacts", "files", "sieve", "identities", "push_subscriptions", "spam_samples", "reports", "archive", "spam_model", "queue", "tasks", "telemetry"]
+[instance.oauth_registration."x:OidcProvider"]
+action = "accept"
+[global.new_permissions]
+action = "grant"
+[instance.http_forwarded."x:Http"]
+source = "xForwardedFor"
+hops = 1
+[global.changed_defaults]
+policy = "recommended"
+      ' > /opt/stalwart-mail/etc/migration/answers.toml
+      echo "0.18" > "$AIO_LOCK"
+      exit 1
     elif [ "$(cat "$AIO_LOCK")" = "0.18" ]; then
-      >&2 echo "Well done, you're ready to go to v1.0"
+      >&2 echo 'Migrating Server to v1.0'
+      SRC=/opt/stalwart-mail/data
+      DST=/opt/stalwart-mail
+      src_size=$(du -sb "$SRC" | awk '{print $1}')
+      avail=$(df -B1 --output=avail "$DST" | tail -n1)
+      if [ "$avail" -lt "$(( src_size * 2 ))" ]; then
+          echo "Not enough free space (want >= 2x DB size for copy + migration headroom)." >&2
+          exit 1
+      fi
+      echo '{
+              "@type": "RocksDb",
+              "path": "/opt/stalwart-mail/data_1"
+            }' > /opt/stalwart-mail/etc/config_1.json
+      stalwart-migrate run --final --yes --source /opt/stalwart-mail/etc/config.json --target /opt/stalwart-mail/etc/config_1.json --state /opt/stalwart-mail/etc/migration
+      if ! stalwart-migrate verify --full --source /opt/stalwart-mail/etc/config.json --target /opt/stalwart-mail/etc/config_1.json --state /opt/stalwart-mail/etc/migration; then
+          echo "Migration failed! Manual intervention needed. Please check the logs." >&2
+          exit 1
+      fi
+      mv -f /opt/stalwart-mail/etc/config_1.json /opt/stalwart-mail/etc/config.json
+      echo "$DATA_VERSION" > "$AIO_LOCK"
+      export STALWART_UPDATE_ROLE_PERMISSIONS=true
     elif [ "$DATA_VERSION" != "$(cat "$AIO_LOCK")" ]; then
       >&2 echo 'Your data is in an old format.'
       >&2 echo 'Make a backup and see https://github.com/winterrific/aio-stalwart#Upgrading'
@@ -120,13 +161,13 @@ fi
 
 # --- Submission Port (SMTPS) ---
 if [ "$ENSURE_SUBMISSION_PORT_CONFIG" = "ON" ]; then
-  json+="{\"@type\": \"create\", \"object\": \"NetworkListener\", \"value\": { \"aio-submission\": { \"name\": \"aio-submission\", \"bind\": {\"[::]:465\": true}, \"protocol\": \"smtp\", \"tlsImplicit\": true }}}
+  json+="{\"@type\": \"create\", \"object\": \"NetworkListener\", \"value\": { \"aio-submission\": { \"name\": \"aio-submission\", \"bind\": {\"[::]:465\": true}, \"protocol\": \"smtp\", \"implicitTls\": true }}}
   "
 fi
 
 # --- IMAP Port (IMAPS) ---
 if [ "$ENSURE_IMAP_PORT_CONFIG" = "ON" ]; then
-  json+="{\"@type\": \"create\", \"object\": \"NetworkListener\", \"value\": { \"aio-imap\": { \"name\": \"aio-imap\", \"bind\": {\"[::]:993\": true}, \"protocol\": \"imap\", \"tlsImplicit\": true }}}
+  json+="{\"@type\": \"create\", \"object\": \"NetworkListener\", \"value\": { \"aio-imap\": { \"name\": \"aio-imap\", \"bind\": {\"[::]:993\": true}, \"protocol\": \"imap\", \"implicitTls\": true }}}
   "
 fi
 
@@ -138,7 +179,7 @@ fi
 
 # --- Managesieve Port ---
 if [ "$ENSURE_MANAGESIEVE_PORT_CONFIG" != "OFF" ]; then
-  json+="{\"@type\": \"create\", \"object\": \"NetworkListener\", \"value\": { \"aio-managesieve\": { \"name\": \"aio-managesieve\", \"bind\": {\"[::]:4190\": true}, \"protocol\": \"manageSieve\", \"tlsImplicit\": true }}}
+  json+="{\"@type\": \"create\", \"object\": \"NetworkListener\", \"value\": { \"aio-managesieve\": { \"name\": \"aio-managesieve\", \"bind\": {\"[::]:4190\": true}, \"protocol\": \"manageSieve\", \"implicitTls\": true }}}
   "
 fi
 
@@ -146,7 +187,7 @@ fi
 # Setup Domain on first run, skipping for later runs to not destroy other domain-settings
 if [ "$FIRST_RUN" = "ON" ]; then
   echo "Setup AIO-Domain, since this is the first startup. This will fail if domain already exists."
-  json+="{\"@type\":\"create\",\"object\":\"Domain\",\"value\":{\"aio-domain\":{\"subAddressing\":{\"@type\":\"Enabled\"},\"isEnabled\":true,\"aliases\":{},\"name\":\"$NC_DOMAIN\",\"dnsManagement\":{\"@type\":\"Manual\"},\"dkimManagement\":{\"@type\":\"Automatic\"},\"certificateManagement\":{\"@type\":\"Manual\"}}}}
+  json+="{\"@type\":\"create\",\"object\":\"Domain\",\"value\":{\"aio-domain\":{\"subAddressing\":{\"@type\":\"Enabled\"},\"enable\":true,\"aliases\":{},\"name\":\"$NC_DOMAIN\",\"dnsManagement\":{\"@type\":\"Manual\"},\"dkimManagement\":{\"@type\":\"Automatic\"},\"certificateManagement\":{\"@type\":\"Manual\"}}}}
   "
 else
   echo "Update AIO-Domain, since this is not first startup."
@@ -163,7 +204,7 @@ fi
 json+=", \"services\":{\"caldav\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"carddav\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"imap\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"jmap\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"managesieve\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"smtp\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"},\"webdav\":{\"cleartext\":false,\"hostname\":\"mail.$NC_DOMAIN\"}}}}
 "
 if [ "$ENSURE_HTTP_USE_X_FORWARDED" = "ON" ]; then
-   json+="{\"@type\": \"update\", \"object\": \"Http\", \"value\": { \"useXForwarded\": true }}
+   json+="{\"@type\": \"update\", \"object\": \"Http\", \"value\": { \"clientIpSource\": \"xForwardedFor\" }}
    "
 fi
 
@@ -203,7 +244,7 @@ if [ "$ENSURE_AIO_CLAMAV_CONFIG" = "ON" ]; then
   "
 fi
 if [ "$ENSURE_AIO_CLAMAV_CONFIG" = "ON" ] && [ "$CLAMAV_ENABLED" = "yes" ]; then
-  json+="{\"@type\": \"create\", \"object\": \"MtaMilter\", \"value\": { \"aio-clamav\": { \"hostname\": \"nextcloud-aio-clamav\", \"port\": 7357, \"useTls\":false, \"allowInvalidCerts\":false, \"enable\": { \"match\": { \"0\": { \"then\": \"true\", \"if\": \"listener = 'aio-mail'\" }}, \"else\": \"false\" }}}}
+  json+="{\"@type\": \"create\", \"object\": \"MtaMilter\", \"value\": { \"aio-clamav\": { \"host\": \"nextcloud-aio-clamav\", \"port\": 7357, \"useTls\":false, \"allowInvalidCerts\":false, \"enable\": { \"match\": { \"0\": { \"then\": \"true\", \"if\": \"listener = 'aio-mail'\" }}, \"else\": \"false\" }}}}
   "
   while [ ! "$(dig A +short nextcloud-aio-clamav)"  ]; do
     >&2 echo "Waiting for ClamAV to become available..."

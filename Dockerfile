@@ -3,12 +3,12 @@ FROM rust:1.99.0@sha256:81015672d6939b0265f09adf96d5de125482bb1330106076956b0518
 WORKDIR /app
 RUN git clone https://github.com/stalwartlabs/cli.git
 WORKDIR /app/cli
-RUN git checkout v1.0.13 && \
+RUN git checkout v1.0.14 && \
     cargo build --release --locked
 
 # Build mail server docker container
 # From https://github.com/stalwartlabs/mail-server/blob/main/Dockerfile
-FROM ghcr.io/stalwartlabs/stalwart:v0.16.27@sha256:c429b311c93db5606598abc1c68225a85a6953183848ae01bee9c6a98885836c
+FROM ghcr.io/stalwartlabs/stalwart:v1.0.3@sha256:73c684a84c24f5b4206ec266a8deb8986fe44a9f623997e07f084388d943c8bd
 
 # Copy local binaries and stalwart-cli
 COPY --chmod=775 bin/* /usr/local/bin/
