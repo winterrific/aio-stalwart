@@ -125,7 +125,7 @@ policy = "recommended"
             }' > /opt/stalwart-mail/etc/config_1.json
       stalwart-migrate run --final --yes --source /opt/stalwart-mail/etc/config.json --target /opt/stalwart-mail/etc/config_1.json --state /opt/stalwart-mail/etc/migration
       if ! stalwart-migrate verify --full --source /opt/stalwart-mail/etc/config.json --target /opt/stalwart-mail/etc/config_1.json --state /opt/stalwart-mail/etc/migration; then
-          echo "Migration failed! Manual intervention neeeded. Please check the logs." >&2
+          echo "Migration failed! Manual intervention needed. Please check the logs." >&2
           exit 1
       fi
       mv -f /opt/stalwart-mail/etc/config_1.json /opt/stalwart-mail/etc/config.json
