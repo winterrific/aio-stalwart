@@ -89,7 +89,7 @@ if [ "$SECURE_DATA_AFTER_UPGRADE" != "OFF" ]; then
     elif [ "$(cat "$AIO_LOCK")" = "0.17" ]; then
       >&2 echo "Preparation script did not run yet. Taking the defaults"
       if [ ! -f '/opt/stalwart-mail/etc/migration/answers.toml' ]; then
-        >&2 echo "There is already a file, will not override it. Please check the answers.toml file and if the locked versoin is set to 0.18"
+        >&2 echo "There is already a file, will not override it. Please check the answers.toml file and if the locked version is set to 0.18"
         exit 1
       fi
       mkdir /opt/stalwart-mail/etc/migration
