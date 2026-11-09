@@ -244,7 +244,7 @@ if [ "$ENSURE_AIO_CLAMAV_CONFIG" = "ON" ]; then
   "
 fi
 if [ "$ENSURE_AIO_CLAMAV_CONFIG" = "ON" ] && [ "$CLAMAV_ENABLED" = "yes" ]; then
-  json+="{\"@type\": \"create\", \"object\": \"MtaMilter\", \"value\": { \"aio-clamav\": { \"hostname\": \"nextcloud-aio-clamav\", \"port\": 7357, \"useTls\":false, \"allowInvalidCerts\":false, \"enable\": { \"match\": { \"0\": { \"then\": \"true\", \"if\": \"listener = 'aio-mail'\" }}, \"else\": \"false\" }}}}
+  json+="{\"@type\": \"create\", \"object\": \"MtaMilter\", \"value\": { \"aio-clamav\": { \"host\": \"nextcloud-aio-clamav\", \"port\": 7357, \"useTls\":false, \"allowInvalidCerts\":false, \"enable\": { \"match\": { \"0\": { \"then\": \"true\", \"if\": \"listener = 'aio-mail'\" }}, \"else\": \"false\" }}}}
   "
   while [ ! "$(dig A +short nextcloud-aio-clamav)"  ]; do
     >&2 echo "Waiting for ClamAV to become available..."
