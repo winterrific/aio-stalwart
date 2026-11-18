@@ -133,8 +133,9 @@ policy = "recommended"
       if ! stalwart-migrate verify --full --source /opt/stalwart-mail/etc/config.json --target /opt/stalwart-mail/etc/config_1.json --state /opt/stalwart-mail/etc/migration; then
           stalwart-migrate report --state /opt/stalwart-mail/etc/migration --severity error
           echo "Migration failed! Manual intervention needed. Please check the logs." >&2
-          echo "Force migration with 'docker exec nextcloud-aio-stalwart touch /opt/stalwart-mail/etc/migration/force'" >&2
-          sleep 600
+          echo "Force migration with 'docker exec nextcloud-aio-stalwart touch /opt/stalwart-mail/etc/migration/force'" >&2          echo "Force migration with 'docker exec nextcloud-aio-stalwart touch /opt/stalwart-mail/etc/migration/force'" >&2
+          echo "Container will restart in 5 Minutes and retry migration" >&2
+          sleep 300
           exit 1
       fi
       mv -f /opt/stalwart-mail/etc/config_1.json /opt/stalwart-mail/etc/config.json
