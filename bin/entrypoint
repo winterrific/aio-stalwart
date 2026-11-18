@@ -126,8 +126,14 @@ policy = "recommended"
               "path": "/opt/stalwart-mail/data_1"
             }' > /opt/stalwart-mail/etc/config_1.json
       stalwart-migrate run --final --yes --source /opt/stalwart-mail/etc/config.json --target /opt/stalwart-mail/etc/config_1.json --state /opt/stalwart-mail/etc/migration
+      if [ -f '/opt/stalwart-mail/etc/migration/force' ]; then
+        stalwart-migrate run --final --yes --allow-errors --source /opt/stalwart-mail/etc/config.json --target /opt/stalwart-mail/etc/config_1.json --state /opt/stalwart-mail/etc/migration
+      fi
       if ! stalwart-migrate verify --full --source /opt/stalwart-mail/etc/config.json --target /opt/stalwart-mail/etc/config_1.json --state /opt/stalwart-mail/etc/migration; then
+          stalwart-migrate report --state /opt/stalwart-mail/etc/migration --run 1 --severity error
           echo "Migration failed! Manual intervention needed. Please check the logs." >&2
+          echo "Force migration with 'docker exec nextcloud-aio-stalwart touch /opt/stalwart-mail/etc/migration/force" >&2
+          sleep 600
           exit 1
       fi
       mv -f /opt/stalwart-mail/etc/config_1.json /opt/stalwart-mail/etc/config.json
