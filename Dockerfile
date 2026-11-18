@@ -22,9 +22,9 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends curl=8.14.1-2+deb13u7 bind9-dnsutils=1:9.20.30-1~deb13u1 xz-utils=5.8.1-1+deb13u2\
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl --proto '=https' --tlsv1.2 -LsSf https://github.com/stalwartlabs/stalwart-migrate/releases/download/v1.0.6/stalwart-migrate-installer.sh \
+RUN curl --proto '=https' --tlsv1.2 -LsSf https://github.com/stalwartlabs/stalwart-migrate/releases/download/v1.0.8/stalwart-migrate-installer.sh \
     -o ./stalwart-migrate-installer.sh \
-    && sh ./stalwart-migrate-installer.sh --version 1.0.6 \
+    && sh ./stalwart-migrate-installer.sh --version 1.0.8 \
     && rm ./stalwart-migrate-installer.sh
 
 EXPOSE 10003
