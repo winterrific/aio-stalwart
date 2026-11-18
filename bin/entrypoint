@@ -127,7 +127,8 @@ policy = "recommended"
             }' > /opt/stalwart-mail/etc/config_1.json
       stalwart-migrate run --final --yes --source /opt/stalwart-mail/etc/config.json --target /opt/stalwart-mail/etc/config_1.json --state /opt/stalwart-mail/etc/migration
       if [ -f '/opt/stalwart-mail/etc/migration/force' ]; then
-        stalwart-migrate run --final --yes --allow-errors --source /opt/stalwart-mail/etc/config.json --target /opt/stalwart-mail/etc/config_1.json --state /opt/stalwart-mail/etc/migration
+          stalwart-migrate run --final --yes --allow-errors --source /opt/stalwart-mail/etc/config.json --target /opt/stalwart-mail/etc/config_1.json --state /opt/stalwart-mail/etc/migration
+          rm -f /opt/stalwart-mail/etc/migration/force
       fi
       if ! stalwart-migrate verify --full --source /opt/stalwart-mail/etc/config.json --target /opt/stalwart-mail/etc/config_1.json --state /opt/stalwart-mail/etc/migration; then
           stalwart-migrate report --state /opt/stalwart-mail/etc/migration --run 1 --severity error
