@@ -101,6 +101,8 @@ include = ["settings", "principals", "mail", "calendars", "contacts", "files", "
 action = "accept"
 [global.new_permissions]
 action = "grant"
+[global.oauth_client_scopes]
+scopes = "interoperable"
 [instance.http_forwarded."x:Http"]
 source = "xForwardedFor"
 hops = 1
