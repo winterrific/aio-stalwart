@@ -141,7 +141,7 @@ policy = "recommended"
       mv -f /opt/stalwart-mail/etc/config_1.json /opt/stalwart-mail/etc/config.json
       echo "$DATA_VERSION" > "$AIO_LOCK"
       export STALWART_UPDATE_ROLE_PERMISSIONS=true
-    elif [ "$(cat "$AIO_LOCK")" = "0.18" ]; then
+    elif [ "$(cat "$AIO_LOCK")" = "1.0" ]; then
       >&2 echo 'Update permissions for Stalwart v1.2 with Environment variable.'
       echo "$DATA_VERSION" > "$AIO_LOCK"
       export STALWART_UPDATE_ROLE_PERMISSIONS=true
