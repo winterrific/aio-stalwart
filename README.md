@@ -65,9 +65,8 @@ Now your data is in the `$LOCATION` folder.
 
 > [!NOTE]
 > Since Stalwart v1.x the binary is `stalwart` (not `stalwart-mail`) and the data store is configured in `config.json`
-(not `config.toml`). An export can only be imported into an empty data store of the same major version (v1.x). To move
-data from a v0.16.x server, use the migration procedure described
-in [Upgrading from 0.16.27 to v1.x](#upgrading-from-0.16.27-to-v1.x).
+(not `config.toml`). An export can only be imported into an empty data store of the same major version (v1.x). See
+also [Upgrading section](#upgrading-from-0.16.27-to-v1.x)
 
 ### Import From Exported Data
 
