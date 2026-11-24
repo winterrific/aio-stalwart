@@ -275,8 +275,9 @@ container start. Recommended procedure:
    `stalwart-migrate verify --full`, then starts Stalwart on the new store. Afterwards the data version lock is set
    to `1.0` and the role permissions are updated once on the first start (`STALWART_UPDATE_ROLE_PERMISSIONS=true`).
 
-If the verification fails, the container prints the detailed migration errors (`stalwart-migrate report --severity
-error`), waits 5 minutes and retries. To force the migration despite errors, run:
+If verification fails, the container prints the detailed migration errors (`stalwart-migrate report --severity
+error`), waits 5 minutes and exits. A restart policy or manual restart is needed to retry. To rerun migration with
+`--allow-errors`, create the following file; full verification must still pass before Stalwart can start:
 
 ```shell
 sudo docker exec nextcloud-aio-stalwart touch /opt/stalwart-mail/etc/migration/force
