@@ -67,7 +67,7 @@ Now your data is in the `$LOCATION` folder.
 > Since Stalwart v1.x the binary is `stalwart` (not `stalwart-mail`) and the data store is configured in `config.json`
 (not `config.toml`). An export can only be imported into an empty data store of the same major version (v1.x). To move
 data from a v0.16.x server, use the migration procedure described
-in [Upgrading from 0.16.x to v1.x](#upgrading-from-016x-to-v1x).
+in [Upgrading from 0.16.x to v1.x](#upgrading-from-0.16.x).
 
 ### Import From Exported Data
 
@@ -299,8 +299,7 @@ many objects and renumbered internal identifiers (see the
 ### Upgrading from 0.15.x to 0.16.x
 
 v0.16 removed the TOML configuration files: all configuration is stored in the database and can be edited in the
-WebAdmin or via the JMAP API only. v1.x additionally changed the on-disk data format, see
-[Upgrading from 0.16.x to v1.x](#upgrading-from-016x-to-v1x). Check the
+WebAdmin or via the JMAP API only. Check the
 [stalwart upgrading guide for v0.16](https://github.com/stalwartlabs/stalwart/blob/main/UPGRADING/v0_16.md) for more
 information.
 
