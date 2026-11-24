@@ -258,7 +258,12 @@ container start. Recommended procedure:
    queue, tasks, telemetry), new permissions are granted, the interoperable OAuth client scope is granted,
    `X-Forwarded-For` is trusted (1 hop) and changed defaults follow the `recommended` policy. See
    [Preparing the migration](https://stalw.art/docs/migration/upgrade-0-16/prepare/).
-   If the preparation did not run, the v1.x-based container writes these defaults itself on the first start.
+   Keep `SECURE_DATA_AFTER_UPGRADE=ON` and complete preparation successfully before updating; confirm that
+   `answers.toml` was written and that `/opt/stalwart-mail/aio.lock` contains `0.18`.
+   The automatic fallback only runs when the lock is `0.17` and no answers file exists: it writes the defaults,
+   changes the lock to `0.18`, and exits, so another container start is needed to migrate.
+   A lock of `0.16` is instead advanced to `1.0` without store migration, and setting
+   `SECURE_DATA_AFTER_UPGRADE=OFF` skips migration entirely. Do not rely on the fallback in those cases.
 
 2. **Back up** the `nextcloud_aio_stalwart` volume (or use the All-In-One backup).
 
