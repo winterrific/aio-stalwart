@@ -5,7 +5,7 @@ AIO_CONFIG_ENV="/opt/stalwart-mail/etc/aio-config.env"
 STW_CONFIG_JSON="/opt/stalwart-mail/etc/aio.json"
 STW_CONFIG_EXPORT="/opt/stalwart-mail/etc/export.json"
 AIO_LOCK="/opt/stalwart-mail/aio.lock"
-DATA_VERSION="1.0"
+DATA_VERSION="1.2"
 
 # --- Defaults for Environment Variables ---
 : "${SECURE_DATA_AFTER_UPGRADE:=ON}"
@@ -139,6 +139,10 @@ policy = "recommended"
           exit 1
       fi
       mv -f /opt/stalwart-mail/etc/config_1.json /opt/stalwart-mail/etc/config.json
+      echo "$DATA_VERSION" > "$AIO_LOCK"
+      export STALWART_UPDATE_ROLE_PERMISSIONS=true
+    elif [ "$(cat "$AIO_LOCK")" = "1.0" ]; then
+      >&2 echo 'Update permissions for Stalwart v1.2 with Environment variable.'
       echo "$DATA_VERSION" > "$AIO_LOCK"
       export STALWART_UPDATE_ROLE_PERMISSIONS=true
     elif [ "$DATA_VERSION" != "$(cat "$AIO_LOCK")" ]; then
