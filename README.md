@@ -249,7 +249,7 @@ container start. Recommended procedure:
    container):
 
    ```shell
-   sudo docker exec nextcloud-aio-stalwart prepare-migration
+   sudo docker exec -it nextcloud-aio-stalwart prepare-migration
    ```
 
    This creates `/opt/stalwart-mail/etc/migration/answers.toml` and marks the installation as prepared. Review and
