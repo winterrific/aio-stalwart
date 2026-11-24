@@ -235,12 +235,14 @@ Note the following changes of the v1.1.x releases (see the
   key-only CloudDNS REST API: existing Netcup entries need the CloudDNS API key in the new `apiKey` field after the
   upgrade. Additionally, v1.1.1 contains many MTA, JMAP, IMAP, Sieve, calendar and WebDAV fixes.
 
-### Upgrading from 0.16.x to v1.x
+### Upgrading from 0.16.27 to v1.x
 
 Stalwart v1.0 changed the on-disk layout of the data store, so a v0.16.x store **cannot be opened in place** by v1.x.
 Instead, all data is copied into a new store with the `stalwart-migrate` tool, which is bundled in this container. See
 the [official migration documentation](https://stalw.art/docs/migration/upgrade-0-16/) and the
-[stalwart-migrate repository](https://github.com/stalwartlabs/stalwart-migrate).
+[stalwart-migrate repository](https://github.com/stalwartlabs/stalwart-migrate). The 0.16.27 needs to be ran on the
+server
+before the upgrade could be performed.
 
 The migration is driven by the data version lock file `/opt/stalwart-mail/aio.lock` and runs automatically on
 container start. Recommended procedure:
@@ -294,7 +296,7 @@ many objects and renumbered internal identifiers (see the
 - catch-all addresses are configured on the domain itself and are not migrated automatically,
 - and so on.
 
-### Upgrading from 0.15.x to v1.x
+### Upgrading from 0.15.x to 0.16.x
 
 v0.16 removed the TOML configuration files: all configuration is stored in the database and can be edited in the
 WebAdmin or via the JMAP API only. v1.x additionally changed the on-disk data format, see
