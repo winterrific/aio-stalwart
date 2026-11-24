@@ -233,7 +233,7 @@ if [ "$AUTO_CONFIG_TLS_CERT" = "ON" ]; then
     # Wait for certs to exist
     while [ ! -f "$AIO_KEY" ] || [ ! -f "$AIO_PUB" ]; do
       >&2 echo "Waiting for SSL keys to be created..."
-      >&2 echo "See: https://github.com/docjyJ/aio-stalwart#use-your-own-certificate"
+      >&2 echo "See: https://github.com/winterrific/aio-stalwart#use-your-own-certificate"
       sleep 10
     done
   fi
